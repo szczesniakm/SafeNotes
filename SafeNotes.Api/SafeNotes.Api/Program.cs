@@ -24,23 +24,19 @@ public class Program
         {
             o.TokenValidationParameters = new TokenValidationParameters
             {
-                // ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-                // ValidAudience = builder.Configuration["JwtSettings:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey
                 (Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"])),
                 ValidateIssuer = false,
                 ValidateAudience= false,
-                // ValidateAudience = true,
-                // ValidateIssuerSigningKey = true
             };
         });
+        builder.Services.AddHttpContextAccessor();
 
-        // Add services to the container.
         builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddApplication(builder.Configuration);
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
+
         builder.Services.AddSwaggerGen(option =>
         {
             option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
@@ -71,7 +67,6 @@ public class Program
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();

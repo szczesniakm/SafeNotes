@@ -14,7 +14,8 @@ namespace SafeNotes.Infrastructure.IoC
             services.AddDbContext<SafeNotesContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("SafeNotesDatabase")));
 
-            services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddTransient<IUsersRepository, UsersRepository>();
+            services.AddTransient<INotesRepository, NotesRepository>();
             services.AddTransient<IEmailSender, LogEmailSender>();
 
             return services;

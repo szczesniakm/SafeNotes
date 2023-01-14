@@ -43,6 +43,11 @@ namespace SafeNotes.Application.Services
                 return new Exception();
             }
 
+            if (!user.IsEmailConfirmed)
+            {
+                return new Exception();
+            }
+
             if(!Argon2.Verify(user.PasswordHash, request.Password))
             {
                 return new Exception();

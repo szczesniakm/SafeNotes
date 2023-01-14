@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SafeNotes.Infrastructure;
 
@@ -11,9 +12,10 @@ using SafeNotes.Infrastructure;
 namespace SafeNotes.Infrastructure.Migrations
 {
     [DbContext(typeof(SafeNotesContext))]
-    partial class SafeNotesContextModelSnapshot : ModelSnapshot
+    [Migration("20230114004310_AddNoteEntity")]
+    partial class AddNoteEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,11 +55,6 @@ namespace SafeNotes.Infrastructure.Migrations
                     b.Property<string>("OwnerEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(320)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
 
                     b.HasKey("Id");
 
