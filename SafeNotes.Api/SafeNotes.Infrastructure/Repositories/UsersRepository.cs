@@ -25,6 +25,9 @@ namespace SafeNotes.Infrastructure.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task<bool> Exists(string email, CancellationToken cancellationToken)
+            => await _context.Set<User>().AnyAsync(x => x.Email == email, cancellationToken);
+
         public async Task<User?> GetByEmail(string email, CancellationToken cancellationToken)
             => await _context.Set<User>().FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
 

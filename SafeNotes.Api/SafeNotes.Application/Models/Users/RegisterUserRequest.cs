@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using SafeNotes.Application.Extensions;
+using SafeNotes.Domain.Repositories;
 
 namespace SafeNotes.Application.Models.Users
 {
@@ -7,13 +8,15 @@ namespace SafeNotes.Application.Models.Users
 
     public class RegisterUserRequestValidator : AbstractValidator<RegisterUserRequest>
     {
-        public RegisterUserRequestValidator()
+        public RegisterUserRequestValidator(IUsersRepository usersRepository)
         {
             RuleFor(x => x.Email)
                 .NotEmpty()
                 .EmailAddress()
                 .MaximumLength(320)
-                .Must(x => x.DoesNotContainDangerousCharacters()).WithMessage("Email contains forbidden characters.");
+                .Must(x => x.DoesNotContainDangerousCharacters()).WithMessage("Email contains forbidden characters.")
+                .MustAsync(async (email, cancellation) => !await usersRepository.Exists(email, cancellation))
+                .WithMessage("User already exists.");
 
             RuleFor(x => x.Password)
                 .NotEmpty()

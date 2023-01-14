@@ -6,6 +6,8 @@ namespace SafeNotes.Domain.Repositories
     {
         Task AddUser(User user, CancellationToken cancellationToken);
 
+        Task<bool> Exists(string email, CancellationToken cancellationToken);
+
         Task<User?> GetByEmail(string email, CancellationToken cancellationToken);
 
         Task<User?> GetBySecurityCode(string securityCode, CancellationToken cancellationToken);

@@ -29,5 +29,18 @@ namespace SafeNotes.Api.Controllers
 
             return BadRequest(result.GetError());
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> CreateNote(int id, [FromBody] UpdateAllowedUsersRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _noteService.UpdateAllowedUsers(
+                request with { NoteId = id }, cancellationToken);
+            if (result.Success)
+            {
+                return NoContent();
+            }
+
+            return BadRequest(result.GetError());
+        }
     }
 }

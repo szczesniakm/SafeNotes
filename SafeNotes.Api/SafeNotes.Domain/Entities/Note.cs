@@ -16,6 +16,8 @@
 
         public bool IsEncryptedWithUserSpecifiedKey { get; private set; }
 
+        public string? Salt { get; private set; }
+
         public DateTime CreatedAt { get; private set; }
 
         public DateTime LastModifiedAt { get; private set; }
@@ -30,21 +32,22 @@
         {
         }
 
-        public Note(User owner, string title, string content, bool isPublic, bool isEncryptedWithUserSpecifiedKey)
+        public Note(User owner, string title, string content, bool isPublic, bool isEncryptedWithUserSpecifiedKey, string? salt)
         {
             Owner = owner;
             Title = title;
             Content = content;
             IsPublic = isPublic;
             IsEncryptedWithUserSpecifiedKey = isEncryptedWithUserSpecifiedKey;
+            Salt = salt;
             CreatedAt = DateTime.UtcNow;
             LastModifiedAt = DateTime.UtcNow;
             LastModifiedBy = owner.Email;
         }
 
-        public void GrantAccess(UserAccess userAccess)
+        public void UpdateAllowedUsers(List<UserAccess> allowedUsers)
         {
-            AllowedUsers.Add(userAccess);
+            AllowedUsers = allowedUsers;
         }
     }
 }

@@ -6,6 +6,8 @@ namespace SafeNotes.Domain.Repositories
     {
         Task Add(Note note, CancellationToken cancellationToken);
 
+        Task<bool> Exists(int id, CancellationToken cancellationToken);
+
         Task<Note?> GetById(int id, CancellationToken cancellationToken);
 
         Task<IEnumerable<Note>> GetByUserEmail(string email, CancellationToken cancellationToken);

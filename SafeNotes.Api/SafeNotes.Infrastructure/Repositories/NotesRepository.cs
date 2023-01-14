@@ -25,6 +25,9 @@ namespace SafeNotes.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> Exists(int id, CancellationToken cancellationToken)
+            => await _context.Set<Note>().AnyAsync(x => x.Id == id, cancellationToken);
+
         public async Task<Note?> GetById(int id, CancellationToken cancellationToken)
             => await _context.Set<Note>().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
