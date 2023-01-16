@@ -29,7 +29,7 @@ namespace SafeNotes.Infrastructure.Repositories
             => await _context.Set<Note>().AnyAsync(x => x.Id == id, cancellationToken);
 
         public async Task<Note?> GetById(int id, CancellationToken cancellationToken)
-            => await _context.Set<Note>().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            => await _context.Set<Note>().Include(x => x.Owner).Include(x => x.AllowedUsers).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         public async Task<IEnumerable<Note>> GetByUserEmail(string email, CancellationToken cancellationToken)
             => await _context.Set<Note>().Include(x => x.Owner).Include(x => x.AllowedUsers).Where(x => x.Owner.Email == email).ToListAsync(cancellationToken);
