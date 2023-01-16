@@ -49,5 +49,13 @@
         {
             AllowedUsers = allowedUsers;
         }
+
+        public void Update(string title, string content, string modifiedBy)
+        {
+            Title = title;
+            Content = content;
+            LastModifiedAt = DateTime.UtcNow;
+            LastModifiedBy = modifiedBy;
+        }
     }
 }

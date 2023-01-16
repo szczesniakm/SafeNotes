@@ -1,0 +1,22 @@
+
+<form *ngIf="note" [formGroup]="form" class="min-h-full flex flex-col px-3 mr-10">
+  <div class="my-3">
+    <input class="w-full text-3xl rounded-lg border-2 border-gray-100 px-5 py-3" type="text" placeholder="Title..." formControlName="title" >
+  </div>
+  <div class="flex-1 flex">
+    <editor
+    [init]="{
+      base_url: '/tinymce',
+      height: '100%',
+      menubar: false,
+      statusbar: false,
+      plugins: 'link image code',
+      toolbar:
+      'formatselect | styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link image | code'
+    }"
+    class="flex-1"
+    formControlName="content"
+  ></editor>
+  </div>
+</form>
+

@@ -1,14 +1,10 @@
 ﻿using FluentValidation;
 using SafeNotes.Application.Extensions;
 using SafeNotes.Domain.Repositories;
-using static SafeNotes.Application.Models.Notes.UpdateAllowedUsersRequest;
 
 namespace SafeNotes.Application.Models.Notes
 {
-    public record UpdateAllowedUsersRequest(int NoteId, IEnumerable<UserAccess> AllowedUsers)
-    {
-        public record UserAccess(string? Email, bool? CanRead, bool? CanWrite);
-    }
+    public record UpdateAllowedUsersRequest(int NoteId, IEnumerable<AllowedUser> AllowedUsers);
 
     public class UpdateAllowedUsersRequestValidator : AbstractValidator<UpdateAllowedUsersRequest>
     {

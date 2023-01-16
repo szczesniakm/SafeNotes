@@ -1,0 +1,14 @@
+<div class="fixed top-0 bottom-0 left-0 right-0 z-50 overflow-auto flex align-middle justify-center">
+  <div class="relative bg-white my-auto rounded-md min-w-fit w-96">
+    <button class="absolute top-10 right-10" (click)="onClose.emit()">
+      <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="rgb(75 85 99)" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    <div class="px-10 pt-10 pb-14">
+      <h4 class="mb-12 text-gray-600 font-semibold text-lg">{{title}}</h4>
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>
+<div class="fixed top-0 bottom-0 left-0 right-0 bg-black opacity-75 z-40"></div>

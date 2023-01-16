@@ -17,6 +17,7 @@ namespace SafeNotes.Application.IoC
             services.AddTransient<JwtTokenGenerator>();
             
             services.AddTransient<IUserIdentityProvider, UserIdentityProvider>();
+            services.AddTransient<IUserAccessProvider, UserAccessProvider>();
             services.AddTransient<UserService>();
             services.AddTransient<AuthService>();
             services.AddTransient<NoteService>();

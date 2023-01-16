@@ -16,6 +16,8 @@ namespace SafeNotes.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(JwtTokenResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
         {
             var result = await _authService.Login(request, cancellationToken);

@@ -1,0 +1,111 @@
+<div class="h-full overflow-auto flex w-ful">
+  <app-notes-list [notes]="notePreviewList" (noteSelected)="handleNoteSelected($event)" class="w-1/6"></app-notes-list>
+  <div class="w-5/6 flex flex-col">
+    <div class="py-3 flex justify-between">
+      <div class="flex space-x-2 px-3 mt-2">
+        <button
+          *ngIf="!selectedNote"
+          (click)="handleCreateNewNoteClicked()"
+          type="button"
+          class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+            Save new note
+        </button>
+        <button
+          *ngIf="selectedNote?.canWrite"
+          (click)="handleUpdateNoteClicked()"
+          type="button"
+          class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+            Save note
+        </button>
+        <button
+          *ngIf="selectedNote?.isOwner"
+          (click)="handleManageAccessClicked()"
+          type="button"
+          class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+            Manage Access
+      </button>
+      </div>
+      <div class="flex space-x-2 px-3 mt-2">
+        <button
+          (click)="authenticationService.logout()"
+          type="button"
+          class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+            Logout
+      </button>
+      </div>
+    </div>
+    <app-view-notes class="flex-1 pb-3" (noteHasChanged)="handleNoteHasChanged($event)" [note]="noteContent"></app-view-notes>
+  </div>
+</div>
+
+<app-modal title="Create new note" *ngIf="displayCreateNewNoteModal" (onClose)="displayCreateNewNoteModal = false">
+  <div>
+    <div class="flex mb-6">
+      <div class="w-full px-3">
+        <div class="form-check form-switch">
+          <input class="form-check-input appearance-none w-9 -ml-10 rounded-full float-left h-5 align-top bg-white bg-no-repeat bg-contain bg-gray-300 focus:outline-none cursor-pointer shadow-sm" type="checkbox" role="switch" id="isPublic" [(ngModel)]="createForm.isPublic" checked>
+          <label class="form-check-label inline-block text-gray-800" for="isPublic">Is public note </label>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="!createForm.isPublic">
+      <div class="flex flex-wrap mb-6">
+        <div class="w-full px-3">
+          <div class="form-check form-switch">
+            <input class="form-check-input appearance-none w-9 -ml-10 rounded-full float-left h-5 align-top bg-white bg-no-repeat bg-contain bg-gray-300 focus:outline-none cursor-pointer shadow-sm" type="checkbox" role="switch" id="isPublic" [(ngModel)]="createForm.isEncryptedWithUserSpecifiedKey" checked>
+            <label class="form-check-label inline-block text-gray-800" for="isPublic">Encrypted</label>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="createForm.isEncryptedWithUserSpecifiedKey">
+        <div class="flex flex-wrap mb-6">
+          <div class="w-full px-3">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+              Key
+            </label>
+            <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"  type="password" placeholder="Key" [(ngModel)]="createForm.key">
+          </div>
+        </div>
+
+      </ng-container>
+    </ng-container>
+
+    <div class="flex flex-wrap mb-6">
+      <div class="w-full px-3">
+        <button
+        (click)="saveNote()"
+        type="button"
+        class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+          Save note
+      </button>
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal title="Enter note key" *ngIf="displayEnterNoteKeyModal" (onClose)="displayEnterNoteKeyModal = false">
+  <div>
+    <div class="flex flex-wrap mb-6">
+      <div class="w-full px-3">
+        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+          Key
+        </label>
+        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"  type="password" placeholder="Key" [(ngModel)]="encryptKey">
+      </div>
+    </div>
+
+    <div class="flex flex-wrap mb-6">
+      <div class="w-full px-3">
+        <button
+        (click)="showEncryptedNote()"
+        type="button"
+        class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+          Show note
+      </button>
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<app-user-access-modal [noteId]="selectedNote!.id!" *ngIf="displayAccessModal" (closeModal)="displayAccessModal = false">
+</app-user-access-modal>

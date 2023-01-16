@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["SafeNotes.Api/SafeNotes.Api.csproj", "SafeNotes.Api/"]
+COPY ["SafeNotes.Infrastructure/SafeNotes.Infrastructure.csproj", "SafeNotes.Infrastructure/"]
+COPY ["SafeNotes.Domain/SafeNotes.Domain.csproj", "SafeNotes.Domain/"]
+COPY ["SafeNotes.Migration/SafeNotes.Migration.csproj", "SafeNotes.Migration/"]
+COPY ["SafeNotes.Application/SafeNotes.Application.csproj", "SafeNotes.Application/"]
+RUN dotnet restore "SafeNotes.Migration/SafeNotes.Migration.csproj"
+COPY . .
+WORKDIR "/src/SafeNotes.Migration"
+RUN dotnet build "SafeNotes.Migration.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "SafeNotes.Migration.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM publish AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT [ "dotnet", "SafeNotes.Migration.dll" ]

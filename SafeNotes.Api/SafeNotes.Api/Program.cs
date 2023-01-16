@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SafeNotes.Application.IoC;
@@ -10,10 +11,23 @@ namespace SafeNotes.Api;
 
 public class Program
 {
+    private const string AllowClientAppOrigin = "AllowClientAppOrigin";
+
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Host.UseSerilog((ctx, cfg) => cfg.ReadFrom.Configuration(ctx.Configuration));
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: AllowClientAppOrigin,
+                policy =>
+                {
+                    policy.WithOrigins(builder.Configuration.GetValue<string>("ClientUrl"));
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                });
+        });
 
         builder.Services.AddAuthentication(options =>
         {
@@ -73,7 +87,12 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        });
+
+        app.UseCors(AllowClientAppOrigin);
 
         app.UseAuthentication();
 

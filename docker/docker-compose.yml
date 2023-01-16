@@ -1,0 +1,56 @@
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - SA_PASSWORD=Pass@word
+      - ACCEPT_EULA=Y
+
+  migration:
+    build:
+      context: './../SafeNotes.Api'
+      dockerfile: DockerfileMigration
+    environment:
+      - ConnectionStrings__SafeNotesDatabase=Server=sqlserver;Database=master;User Id=sa;Password=Pass@word;
+    volumes:
+      - .:/app/migration
+    links:
+      - sqlserver
+    depends_on:
+      - sqlserver
+
+  safe-notes-api:
+    build:
+      context: './../SafeNotes.Api'
+      dockerfile: Dockerfile
+    links:
+      - sqlserver
+    depends_on:
+      - migration
+    environment:
+      - ConnectionStrings__SafeNotesDatabase=Server=sqlserver;Database=master;User Id=sa;Password=Pass@word;
+      - ClientUrl=https://localhost
+      - JwtSettings__Secret=$SkMG6!B4i&#0m2oBl^mq&YefPE6aurzIrY2@Nl!6tBxCP5RO1
+      - JwtSettings__Issuer=ocalhost
+      - JwtSettings__Audience=localhost
+    restart: unless-stopped
+
+  safe-notes-client:
+    build:
+      context: './../SafeNotes.Angular'
+      dockerfile: Dockerfile
+    depends_on:
+      - safe-notes-api
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: './nginx'
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - safe-notes-api
+      - safe-notes-client
+    restart: unless-stopped
